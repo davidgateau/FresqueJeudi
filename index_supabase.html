@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Formulaire Motivation - Supabase</title>
+</head>
+<body>
+  <h2>Répartis 10 étoiles ✨</h2>
+  <p>Quels sont les axes qui pèsent le plus dans le choix du travail que vous exercez aujourd'hui ?<br>
+  Répartissez 10 points exactement entre les différents axes ci-dessous :</p>
+
+  <label>Prénom : <input type="text" id="prenom" required /></label><br><br>
+
+  <div id="axes">
+    <label>Plaisir : <input type="number" name="plaisir" value="0" min="0" max="10" /></label><br>
+    <label>Autonomie : <input type="number" name="autonomie" value="0" min="0" max="10" /></label><br>
+    <label>Collectif : <input type="number" name="collectif" value="0" min="0" max="10" /></label><br>
+    <label>Équilibre : <input type="number" name="equilibre" value="0" min="0" max="10" /></label><br>
+    <label>Expertise : <input type="number" name="expertise" value="0" min="0" max="10" /></label><br>
+    <label>Statut : <input type="number" name="statut" value="0" min="0" max="10" /></label><br>
+    <label>Rémunération : <input type="number" name="remuneration" value="0" min="0" max="10" /></label><br>
+    <label>Contribution : <input type="number" name="contribution" value="0" min="0" max="10" /></label><br>
+  </div>
+
+  <button onclick="envoyer()">Valider</button>
+
+  <script>
+    async function envoyer() {
+      const prenom = document.getElementById("prenom").value.trim();
+      const champs = document.querySelectorAll("#axes input");
+      let total = 0;
+      let valeurs = {};
+
+      champs.forEach(input => {
+        const val = parseInt(input.value) || 0;
+        total += val;
+        valeurs[input.name] = val;
+      });
+
+      if (!prenom) {
+        alert("Merci d’entrer votre prénom.");
+        return;
+      }
+
+      if (total !== 10) {
+        alert("Tu dois répartir exactement 10 étoiles. Total actuel : " + total);
+        return;
+      }
+
+      const data = {
+        prenom: prenom,
+        ...valeurs
+      };
+
+      const res = await fetch("https://yuqjdfwuxafnxqudqcda.supabase.co/rest/v1/reponses", {
+        method: "POST",
+        headers: {
+          "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl1cWpkZnd1eGFmbnhxdWRxY2RhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3MDMxNzIsImV4cCI6MjA2NTI3OTE3Mn0.cLqPaf7WPVY8XAvbIkzmZC4mHXQPjHjKRPrD7OmBwt8",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl1cWpkZnd1eGFmbnhxdWRxY2RhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3MDMxNzIsImV4cCI6MjA2NTI3OTE3Mn0.cLqPaf7WPVY8XAvbIkzmZC4mHXQPjHjKRPrD7OmBwt8",
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        alert("Réponse enregistrée !");
+      } else {
+        alert("Erreur : " + res.statusText);
+      }
+    }
+  </script>
+</body>
+</html>
